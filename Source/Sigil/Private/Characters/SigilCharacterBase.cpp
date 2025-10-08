@@ -3,6 +3,8 @@
 
 #include "Sigil/Public/Characters/SigilCharacterBase.h"
 
+#include "AbilitySystem/SigilAbilitySystemComponent.h"
+
 
 // Sets default values
 ASigilCharacterBase::ASigilCharacterBase()
@@ -11,5 +13,18 @@ ASigilCharacterBase::ASigilCharacterBase()
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 	GetMesh()->bReceivesDecals = false;
+
+	SigilAbilitySystemComponent = CreateDefaultSubobject<USigilAbilitySystemComponent>("SigilAbilitySystemComponent");
+}
+
+UAbilitySystemComponent* ASigilCharacterBase::GetAbilitySystemComponent() const
+{
+	return SigilAbilitySystemComponent.Get();
+}
+
+void ASigilCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+	SigilAbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 

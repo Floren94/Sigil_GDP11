@@ -7,7 +7,6 @@
 #include "SigilInputConfig.h"
 #include "SigilInputComponent.generated.h"
 
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SIGIL_API USigilInputComponent : public UEnhancedInputComponent
 {
