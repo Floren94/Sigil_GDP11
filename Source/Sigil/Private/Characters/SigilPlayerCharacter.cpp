@@ -5,7 +5,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Chaos/PBDSuspensionConstraintData.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayTags/SigilGameplayTagsInput.h"
+#include "Input/SigilInputComponent.h"
+#include "Input/SigilInputConfig.h"
+
 
 
 // Sets default values
@@ -13,8 +18,6 @@ ASigilPlayerCharacter::ASigilPlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	ReceiveControllerChangedDelegate.AddDynamic(this, &ThisClass::ASigilPlayerCharacter::HandleControllerChanged);
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -25,22 +28,14 @@ ASigilPlayerCharacter::ASigilPlayerCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
-void ASigilPlayerCharacter::HandleControllerChanged(APawn* Pawn, AController* OldController, AController* NewController)
+void ASigilPlayerCharacter::BeginPlay()
 {
+	Super::BeginPlay();
+	MovementState = EMovementState::Walking;
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, "Input Set Up");
-	
-	APlayerController* PlayerController = Cast<APlayerController>(NewController);
-
-	if (PlayerController)
+	if (IsValid(AnimLayerClass))
 	{
-		UEnhancedInputLocalPlayerSubsystem* Subsystem =
-			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem)
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
+		GetMesh()->LinkAnimClassLayers(AnimLayerClass);
 	}
 }
 
@@ -49,24 +44,21 @@ void ASigilPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	check(InputConfig);
 
-	if (PlayerController)
+	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	check(LocalPlayer);
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(Subsystem);
+
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(InputConfig->DefaultMappingContext,0);
+
+	if (USigilInputComponent* SigilInputComponent = CastChecked<USigilInputComponent>(PlayerInputComponent))
 	{
-		UEnhancedInputLocalPlayerSubsystem* Subsystem =
-			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem)
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
-	
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ThisClass::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump	);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed	, this, &ACharacter::StopJumping);
+		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Move);
+		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Look);
 	}
 }
 

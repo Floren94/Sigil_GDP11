@@ -6,6 +6,7 @@
 #include "SigilCharacterBase.h"
 #include "SigilPlayerCharacter.generated.h"
 
+class USigilInputConfig;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -21,28 +22,22 @@ public:
 	// Sets default values for this character's properties
 	ASigilPlayerCharacter();
 
+	virtual void BeginPlay() override;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> CameraComponent;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputMappingContext> DefaultMappingContext;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> MoveAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UInputAction> JumpAction;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USigilInputConfig> InputConfig;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UAnimInstance> AnimLayerClass;
+	
 public:
-	UFUNCTION()
-	void HandleControllerChanged(APawn* Pawn, AController* OldController, AController* NewController);
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
