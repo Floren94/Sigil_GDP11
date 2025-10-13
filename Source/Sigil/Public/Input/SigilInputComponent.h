@@ -41,9 +41,9 @@ void USigilInputComponent::BindAbilityAction(const USigilInputConfig* InInputCon
 		if (ActionConfig.InputAction && ActionConfig.InputTag.IsValid())
 		{
 			if (PressedFunc)
-				BindAction(ActionConfig.InputAction,ActionConfig.TriggerEvent, Object, PressedFunc);
+				BindAction(ActionConfig.InputAction,ActionConfig.TriggerEvent, Object, PressedFunc, ActionConfig.InputTag);
 			if (ReleasedFunc)
-				BindAction(ActionConfig.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc);
+				BindAction(ActionConfig.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, ActionConfig.InputTag);
 		}
 	}
 }

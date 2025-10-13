@@ -9,6 +9,7 @@
 #include "Utilities/SigilAnimUtils.h"
 #include "SigilCharacterBase.generated.h"
 
+class USigilCharacterStartUpData;
 class USigilAbilitySystemComponent;
 
 UCLASS()
@@ -25,13 +26,21 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|AbilitySysteem")
+	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|AbilitySystem")
 	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sigil|Animation", meta=(AllowPrivateAccess=true))
 	EMovementState MovementState;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|StartUpData")
+	TSoftObjectPtr<USigilCharacterStartUpData> StartUpData;
+
+	void GiveStartingAbilities() const;
+	
 	public:
+	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
+	void SetMovementState(const EMovementState InMovementState);
+	
 	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
 	EMovementState GetMovementState() const {return MovementState;}
 };

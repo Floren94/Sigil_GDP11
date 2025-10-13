@@ -4,6 +4,7 @@
 #include "Sigil/Public/Characters/SigilPlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Chaos/PBDSuspensionConstraintData.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -43,7 +44,6 @@ void ASigilPlayerCharacter::BeginPlay()
 void ASigilPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 	check(InputConfig);
 
 	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
@@ -59,6 +59,7 @@ void ASigilPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	{
 		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Move);
 		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Look);
+		SigilInputComponent->BindAbilityAction(InputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
 	}
 }
 
@@ -81,4 +82,14 @@ void ASigilPlayerCharacter::Look(const FInputActionValue& Value)
 
 	AddControllerYawInput(InputValue.X);
 	AddControllerPitchInput(InputValue.Y);
+}
+
+void ASigilPlayerCharacter::AbilityInputPressed(FGameplayTag InputTag)
+{
+	SigilAbilitySystemComponent->AbilityTagPressed(InputTag);
+}
+
+void ASigilPlayerCharacter::AbilityInputReleased(FGameplayTag InputTag)
+{
+	SigilAbilitySystemComponent->AbilityTagReleased(InputTag);
 }

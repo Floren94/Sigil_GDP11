@@ -16,4 +16,7 @@ class SIGIL_API USigilAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	USigilAbilitySystemComponent();
+
+	void AbilityTagPressed(const FGameplayTag& InputTag);
+	void AbilityTagReleased(const FGameplayTag& InputTag);
 };

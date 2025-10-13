@@ -4,6 +4,7 @@
 #include "Sigil/Public/Characters/SigilCharacterBase.h"
 
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
+#include "Characters/Data/SigilCharacterStartUpData.h"
 
 
 // Sets default values
@@ -26,5 +27,20 @@ void ASigilCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SigilAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	GiveStartingAbilities();
+}
+
+void ASigilCharacterBase::GiveStartingAbilities() const
+{
+	if (StartUpData.IsNull())
+		return;
+
+	if (USigilCharacterStartUpData* LoadedStartUpData  = StartUpData.LoadSynchronous())
+		LoadedStartUpData->GiveAbilityToComponent(SigilAbilitySystemComponent);
+}
+
+void ASigilCharacterBase::SetMovementState(const EMovementState InMovementState)
+{
+	MovementState = InMovementState;
 }
 

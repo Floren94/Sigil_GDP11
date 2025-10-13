@@ -36,12 +36,15 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<UAnimInstance> AnimLayerClass;
+
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void AbilityInputPressed(FGameplayTag InputTag);
+	void AbilityInputReleased(FGameplayTag InputTag);
 	
 public:
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
 };
