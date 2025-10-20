@@ -41,10 +41,16 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
+	virtual void Landed(const FHitResult& Hit) override;
 	
 public:
 	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
+	void AddGameplayTag(const FGameplayTag& InTag);
+
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
+	void RemoveGameplayTag(const FGameplayTag& InTag);
 };

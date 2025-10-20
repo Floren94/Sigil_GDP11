@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "Chaos/PBDSuspensionConstraintData.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayTags/SigilGameplayTagsAbilities.h"
 #include "GameplayTags/SigilGameplayTagsInput.h"
 #include "Input/SigilInputComponent.h"
 #include "Input/SigilInputConfig.h"
@@ -33,6 +34,7 @@ void ASigilPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	MovementState = EMovementState::Walking;
+	AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
 
 	if (IsValid(AnimLayerClass))
 	{
@@ -61,6 +63,24 @@ void ASigilPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Look);
 		SigilInputComponent->BindAbilityAction(InputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
 	}
+}
+
+void ASigilPlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+	RemoveGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
+}
+
+void ASigilPlayerCharacter::AddGameplayTag(const FGameplayTag& InTag)
+{
+	SigilAbilitySystemComponent->AddLooseGameplayTag(InTag);
+}
+
+void ASigilPlayerCharacter::RemoveGameplayTag(const FGameplayTag& InTag)
+{
+	SigilAbilitySystemComponent->RemoveLooseGameplayTag(InTag);
 }
 
 void ASigilPlayerCharacter::Move(const FInputActionValue& Value)
