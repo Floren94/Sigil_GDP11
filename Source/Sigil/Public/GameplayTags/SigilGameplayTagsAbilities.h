@@ -1,0 +1,24 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "NativeGameplayTags.h"
+
+namespace SigilGameplayTags
+{
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Sprinting)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_DoubleJump)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Grounded)
+
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_BlockMontage)
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Weapon_Staff)
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Equip_Staff)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Attack_Light_Staff)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Attack_Heavy_Staff)
+	
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Event_Equip_Staff)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Event_Unequip_Staff)
+	
+}

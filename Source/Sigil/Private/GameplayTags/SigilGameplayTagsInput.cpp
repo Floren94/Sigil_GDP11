@@ -7,3 +7,7 @@ UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Move, "Input.Tag.Move")
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Look, "Input.Tag.Look")
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Jump, "Input.Tag.Jump")
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Sprint, "Input.Tag.Sprint")
+
+UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_EquipMainWeapon, "Input.Tag.EquipMainWeapon")
+UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Staff_LightAttack, "Input.Tag.Staff.LightAttack")
+UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::InputTag_Staff_HeavyAttack, "Input.Tag.Staff.HeavyAttack")
