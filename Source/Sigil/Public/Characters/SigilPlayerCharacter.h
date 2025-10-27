@@ -48,9 +48,4 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
-	void AddGameplayTag(const FGameplayTag& InTag);
-
-	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
-	void RemoveGameplayTag(const FGameplayTag& InTag);
 };

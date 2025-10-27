@@ -44,3 +44,13 @@ void ASigilCharacterBase::SetMovementState(const EMovementState InMovementState)
 	MovementState = InMovementState;
 }
 
+
+void ASigilCharacterBase::AddGameplayTag(const FGameplayTag& InTag)
+{
+	SigilAbilitySystemComponent->AddLooseGameplayTag(InTag);
+}
+
+void ASigilCharacterBase::RemoveGameplayTag(const FGameplayTag& InTag)
+{
+	SigilAbilitySystemComponent->RemoveLooseGameplayTag(InTag);
+}

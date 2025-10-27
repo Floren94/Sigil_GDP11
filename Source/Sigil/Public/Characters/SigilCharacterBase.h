@@ -43,4 +43,10 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
 	EMovementState GetMovementState() const {return MovementState;}
+
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
+	void AddGameplayTag(const FGameplayTag& InTag);
+
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
+	void RemoveGameplayTag(const FGameplayTag& InTag);
 };

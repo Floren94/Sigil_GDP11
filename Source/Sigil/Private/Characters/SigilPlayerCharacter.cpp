@@ -73,16 +73,6 @@ void ASigilPlayerCharacter::Landed(const FHitResult& Hit)
 	RemoveGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
 }
 
-void ASigilPlayerCharacter::AddGameplayTag(const FGameplayTag& InTag)
-{
-	SigilAbilitySystemComponent->AddLooseGameplayTag(InTag);
-}
-
-void ASigilPlayerCharacter::RemoveGameplayTag(const FGameplayTag& InTag)
-{
-	SigilAbilitySystemComponent->RemoveLooseGameplayTag(InTag);
-}
-
 void ASigilPlayerCharacter::Move(const FInputActionValue& Value)
 {
 	const FVector2d InputValue = Value.Get<FVector2d>();
