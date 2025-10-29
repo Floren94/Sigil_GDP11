@@ -13,6 +13,12 @@ void USigilCharacterStartUpData::GiveAbilityToComponent(USigilAbilitySystemCompo
 	GiveAbilities(StartUpAbilities, InSigilAbilityComponent, InAbilityLevel);
 }
 
+void USigilCharacterStartUpData::GiveStartingItems(UItemAbilityManagerComp* InSigilAbilityManagerComponent)
+{
+	check(InSigilAbilityManagerComponent)
+	CreateItemInstances(StartingItems, InSigilAbilityManagerComponent);
+}
+
 void USigilCharacterStartUpData::GiveAbilities(TArray<TSubclassOf<USigilGameplayAbility>>& AbilitiesToGive,
                                                USigilAbilitySystemComponent* InAbilitySystemComponent, int32 ApplyLevel)
 {
@@ -24,4 +30,13 @@ void USigilCharacterStartUpData::GiveAbilities(TArray<TSubclassOf<USigilGameplay
 		if (!IsValid(Ability)) continue;
 		InAbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability,ApplyLevel,INDEX_NONE, InAbilitySystemComponent->GetAvatarActor()));
 	}
+}
+
+void USigilCharacterStartUpData::CreateItemInstances(TArray<TObjectPtr<USigilItemSpecBase>>& InStartingItems,
+	UItemAbilityManagerComp* InSigilAbilityManagerComponent)
+{
+	if (StartingItems.IsEmpty()) return;
+
+	for (const TObjectPtr<USigilItemSpecBase>& Item : InStartingItems)
+		InSigilAbilityManagerComponent->CreateItemInstance(Item.Get());
 }

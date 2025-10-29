@@ -9,6 +9,7 @@
 #include "Utilities/SigilAnimUtils.h"
 #include "SigilCharacterBase.generated.h"
 
+class UItemAbilityManagerComp;
 class USigilCharacterStartUpData;
 class USigilAbilitySystemComponent;
 
@@ -28,6 +29,9 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|AbilitySystem")
 	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|Items")
+	TObjectPtr<UItemAbilityManagerComp> ItemAbilityManagerComp;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sigil|Animation", meta=(AllowPrivateAccess=true))
 	EMovementState MovementState;
@@ -37,7 +41,10 @@ protected:
 
 	void GiveStartingAbilities() const;
 	
-	public:
+	public:	
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Sigil|Item|Abilities")
+	UItemAbilityManagerComp* GetItemAbilityComponent() {return ItemAbilityManagerComp;}
+	
 	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
 	void SetMovementState(const EMovementState InMovementState);
 	

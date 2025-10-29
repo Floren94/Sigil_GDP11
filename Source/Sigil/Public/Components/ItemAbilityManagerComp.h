@@ -3,9 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "ItemAbilityManagerComp.generated.h"
 
+
+class USigilItemInstanceBase;
+class USigilItemSpecBase;
+class USigilSpawnedItemInstance;
+class UEnhancedInputLocalPlayerSubsystem;
+class USigilAbilitySystemComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SIGIL_API UItemAbilityManagerComp : public UActorComponent
@@ -13,15 +20,56 @@ class SIGIL_API UItemAbilityManagerComp : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	UItemAbilityManagerComp();
 
+	UFUNCTION(BlueprintCallable)
+	void CreateItemInstance(USigilItemSpecBase* InItemSpec);
+	
+	UFUNCTION(BlueprintCallable)
+	void EquipItem(const FGameplayTag InItemTag);
+	
+	UFUNCTION(BlueprintCallable)
+	void UnEquipItem();
+
+	UFUNCTION(BlueprintCallable)
+	USigilItemInstanceBase* GetItemInstance(const FGameplayTag InItemTag) const;
+
+	UFUNCTION(BlueprintCallable)
+	USigilSpawnedItemInstance* GetActiveItem() {return CurrentActiveItem;}
+
+	template<typename T>
+	T* GetEquippedItemInstance() const
+	{
+		return Cast<T>(CurrentActiveItem);
+	}
+
+	template<typename T>
+	T* GetTypedItemInstance(const FGameplayTag InItemTag) const
+	{
+		if (USigilItemInstanceBase* Base = GetItemInstance(InItemTag))
+		{
+			return Cast<T>(Base);
+		}
+		return nullptr;
+	}
+
+	
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	UPROPERTY()
+	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
+	
+	UPROPERTY()
+	TObjectPtr<USkeletalMeshComponent> OwnerSkeletalMesh;
+
+	UPROPERTY()
+	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> InputSubsystem;
+
+	UPROPERTY()
+	TObjectPtr<USigilSpawnedItemInstance> CurrentActiveItem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<FGameplayTag, TObjectPtr<USigilItemInstanceBase>> CurrentItemMap;
+	
 };

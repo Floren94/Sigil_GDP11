@@ -16,6 +16,7 @@ ASigilCharacterBase::ASigilCharacterBase()
 	GetMesh()->bReceivesDecals = false;
 
 	SigilAbilitySystemComponent = CreateDefaultSubobject<USigilAbilitySystemComponent>("SigilAbilitySystemComponent");
+	ItemAbilityManagerComp = CreateDefaultSubobject<UItemAbilityManagerComp>("ItemAbilityManagerComponent");
 }
 
 UAbilitySystemComponent* ASigilCharacterBase::GetAbilitySystemComponent() const
@@ -36,7 +37,10 @@ void ASigilCharacterBase::GiveStartingAbilities() const
 		return;
 
 	if (USigilCharacterStartUpData* LoadedStartUpData  = StartUpData.LoadSynchronous())
+	{
 		LoadedStartUpData->GiveAbilityToComponent(SigilAbilitySystemComponent);
+		LoadedStartUpData->GiveStartingItems(ItemAbilityManagerComp);
+	}
 }
 
 void ASigilCharacterBase::SetMovementState(const EMovementState InMovementState)

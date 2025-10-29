@@ -3,34 +3,94 @@
 
 #include "Components/ItemAbilityManagerComp.h"
 
+#include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/SigilAbilitySystemComponent.h"
+#include "Characters/SigilCharacterBase.h"
+#include "Items/InstanceObjects/SigilItemInstanceBase.h"
+#include "Items/InstanceObjects/SigilSpawnedItemInstance.h"
+#include "Items/Specs/SigilItemSpecBase.h"
+#include "Items/Specs/SigilSpawnedItemSpec.h"
+
 
 // Sets default values for this component's properties
 UItemAbilityManagerComp::UItemAbilityManagerComp()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
-// Called when the game starts
 void UItemAbilityManagerComp::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	if (AActor* Owner = GetOwner())
+	{
+		if (ASigilCharacterBase* SigilCharacter = Cast<ASigilCharacterBase>(Owner))
+		{
+			OwnerSkeletalMesh = SigilCharacter->GetMesh();
+			SigilAbilitySystemComponent = Cast<USigilAbilitySystemComponent>(SigilCharacter->GetAbilitySystemComponent());
+		}
+
+		if (APlayerController* PC = Cast<APlayerController>(Owner->GetInstigatorController()))
+		{
+			if (ULocalPlayer* LP = PC->GetLocalPlayer())
+			{
+				InputSubsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+			}
+		}
+	}
 }
 
-
-// Called every frame
-void UItemAbilityManagerComp::TickComponent(float DeltaTime, ELevelTick TickType,
-                                            FActorComponentTickFunction* ThisTickFunction)
+void UItemAbilityManagerComp::CreateItemInstance(USigilItemSpecBase* InItemSpec)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!InItemSpec || !SigilAbilitySystemComponent) return;
 
-	// ...
+	USigilItemInstanceBase* Instance = InItemSpec->CreateItemInstance(this);
+	Instance->Initialize(InItemSpec, SigilAbilitySystemComponent);
+
+	if (USigilSpawnedItemInstance* SpawnedItem = Cast<USigilSpawnedItemInstance>(Instance))
+	{
+		SpawnedItem->SpawnAndAttachItem(GetOwner());
+	}
+	
+	Instance->GrantAbilities();
+	CurrentItemMap.Add(InItemSpec->Tag, Instance);
 }
+
+void UItemAbilityManagerComp::EquipItem(const FGameplayTag InItemTag)
+{
+	if (IsValid(CurrentActiveItem))
+		UnEquipItem();
+
+	USigilSpawnedItemInstance* ItemToEquip = Cast<USigilSpawnedItemInstance>(CurrentItemMap.Find(InItemTag)->Get());
+	ItemToEquip->SpawnedItemActor->AttachToComponent(OwnerSkeletalMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		ItemToEquip->SpawnedItemSpec->ActiveSocket);
+	CurrentActiveItem = ItemToEquip;
+	CurrentActiveItem->GrantEquipAbility();
+	SigilAbilitySystemComponent->AddLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
+}
+
+void UItemAbilityManagerComp::UnEquipItem()
+{
+	if (!IsValid(CurrentActiveItem))
+		return;
+
+	CurrentActiveItem->SpawnedItemActor->AttachToComponent(OwnerSkeletalMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		CurrentActiveItem->SpawnedItemSpec->PassiveSocket);
+	CurrentActiveItem->RemoveEquipAbility();
+	SigilAbilitySystemComponent->RemoveLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
+	CurrentActiveItem = nullptr;
+}
+
+USigilItemInstanceBase* UItemAbilityManagerComp::GetItemInstance(const FGameplayTag InItemTag) const
+{
+	if (USigilItemInstanceBase* FoundInstance = CurrentItemMap.Find(InItemTag)->Get())
+	{
+		return FoundInstance;
+	}
+	return nullptr;
+}
+
+
+
+
 
