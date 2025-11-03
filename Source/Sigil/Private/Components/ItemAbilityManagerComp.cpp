@@ -67,6 +67,7 @@ void UItemAbilityManagerComp::EquipItem(const FGameplayTag InItemTag)
 	CurrentActiveItem = ItemToEquip;
 	CurrentActiveItem->GrantEquipAbility();
 	SigilAbilitySystemComponent->AddLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
+	InputSubsystem->AddMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext, 1);
 }
 
 void UItemAbilityManagerComp::UnEquipItem()
@@ -78,6 +79,7 @@ void UItemAbilityManagerComp::UnEquipItem()
 		CurrentActiveItem->SpawnedItemSpec->PassiveSocket);
 	CurrentActiveItem->RemoveEquipAbility();
 	SigilAbilitySystemComponent->RemoveLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
+	InputSubsystem->RemoveMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext);
 	CurrentActiveItem = nullptr;
 }
 
