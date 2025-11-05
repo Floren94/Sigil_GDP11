@@ -33,9 +33,6 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Character|Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USigilInputConfig> InputConfig;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UAnimInstance> AnimLayerClass;
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);

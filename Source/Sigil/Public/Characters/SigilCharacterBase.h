@@ -39,6 +39,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|StartUpData")
 	TSoftObjectPtr<USigilCharacterStartUpData> StartUpData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Animation", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAnimInstance> AnimLayerClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Animation", meta=(AllowPrivateAccess=true))
+	TSubclassOf<UAnimInstance> AnimCombatLayerClass;
+	
 	void GiveStartingAbilities() const;
 	
 	public:	
@@ -52,8 +58,16 @@ protected:
 	EMovementState GetMovementState() const {return MovementState;}
 
 	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
-	void AddGameplayTag(const FGameplayTag& InTag);
+	void AddGameplayTag(const FGameplayTag InTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
-	void RemoveGameplayTag(const FGameplayTag& InTag);
+	void RemoveGameplayTag(const FGameplayTag InTag);
+
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Animation")
+	void SetLinkedLayerDefault();
+
+	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Animation")
+	void SetLinkedLayerCombat();
+
+	void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 };

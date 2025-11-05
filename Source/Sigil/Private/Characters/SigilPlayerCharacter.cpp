@@ -34,7 +34,7 @@ void ASigilPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	MovementState = EMovementState::Walking;
-	AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+	//AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
 
 	if (IsValid(AnimLayerClass))
 	{
@@ -69,8 +69,8 @@ void ASigilPlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
-	RemoveGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
+	//AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+	//RemoveGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
 }
 
 void ASigilPlayerCharacter::Move(const FInputActionValue& Value)

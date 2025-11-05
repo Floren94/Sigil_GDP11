@@ -16,15 +16,17 @@
 UItemAbilityManagerComp::UItemAbilityManagerComp()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	CurrentItemTag = FGameplayTag();
 }
 
 void UItemAbilityManagerComp::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (AActor* Owner = GetOwner())
 	{
-		if (ASigilCharacterBase* SigilCharacter = Cast<ASigilCharacterBase>(Owner))
+		SigilCharacter = Cast<ASigilCharacterBase>(Owner);
+		if (SigilCharacter)
 		{
 			OwnerSkeletalMesh = SigilCharacter->GetMesh();
 			SigilAbilitySystemComponent = Cast<USigilAbilitySystemComponent>(SigilCharacter->GetAbilitySystemComponent());
@@ -68,6 +70,8 @@ void UItemAbilityManagerComp::EquipItem(const FGameplayTag InItemTag)
 	CurrentActiveItem->GrantEquipAbility();
 	SigilAbilitySystemComponent->AddLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
 	InputSubsystem->AddMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext, 1);
+	SigilCharacter->SetLinkedLayerCombat();
+	CurrentItemTag = InItemTag;	
 }
 
 void UItemAbilityManagerComp::UnEquipItem()
@@ -80,7 +84,9 @@ void UItemAbilityManagerComp::UnEquipItem()
 	CurrentActiveItem->RemoveEquipAbility();
 	SigilAbilitySystemComponent->RemoveLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
 	InputSubsystem->RemoveMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext);
+	SigilCharacter->SetLinkedLayerDefault();
 	CurrentActiveItem = nullptr;
+	CurrentItemTag = FGameplayTag();;
 }
 
 USigilItemInstanceBase* UItemAbilityManagerComp::GetItemInstance(const FGameplayTag InItemTag) const

@@ -8,6 +8,7 @@
 #include "ItemAbilityManagerComp.generated.h"
 
 
+class ASigilCharacterBase;
 class USigilItemInstanceBase;
 class USigilItemSpecBase;
 class USigilSpawnedItemInstance;
@@ -68,6 +69,12 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USigilSpawnedItemInstance> CurrentActiveItem;
+
+	UPROPERTY()
+	TObjectPtr<ASigilCharacterBase> SigilCharacter;
+	
+	UPROPERTY()
+	FGameplayTag CurrentItemTag;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TMap<FGameplayTag, TObjectPtr<USigilItemInstanceBase>> CurrentItemMap;

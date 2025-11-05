@@ -9,6 +9,7 @@ namespace SigilGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Sprinting)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_DoubleJump)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Grounded)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Movement_Airborne)
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Effect_Cooldown_Attack_Light_Staff)
 

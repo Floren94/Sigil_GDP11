@@ -5,6 +5,8 @@
 
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "Characters/Data/SigilCharacterStartUpData.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayTags/SigilGameplayTagsAbilities.h"
 
 
 // Sets default values
@@ -49,12 +51,41 @@ void ASigilCharacterBase::SetMovementState(const EMovementState InMovementState)
 }
 
 
-void ASigilCharacterBase::AddGameplayTag(const FGameplayTag& InTag)
+void ASigilCharacterBase::AddGameplayTag(const FGameplayTag InTag)
 {
 	SigilAbilitySystemComponent->AddLooseGameplayTag(InTag);
 }
 
-void ASigilCharacterBase::RemoveGameplayTag(const FGameplayTag& InTag)
+void ASigilCharacterBase::RemoveGameplayTag(const FGameplayTag InTag)
 {
 	SigilAbilitySystemComponent->RemoveLooseGameplayTag(InTag);
+}
+
+void ASigilCharacterBase::SetLinkedLayerDefault()
+{
+	GetMesh()->LinkAnimClassLayers(AnimLayerClass);
+}
+
+void ASigilCharacterBase::SetLinkedLayerCombat()
+{
+	GetMesh()->LinkAnimClassLayers(AnimCombatLayerClass);
+}
+
+void ASigilCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if (!IsValid(SigilAbilitySystemComponent)) return;
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+	}
+	else if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
+	}
 }
