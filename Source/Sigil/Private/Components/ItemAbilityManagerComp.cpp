@@ -32,13 +32,6 @@ void UItemAbilityManagerComp::BeginPlay()
 			SigilAbilitySystemComponent = Cast<USigilAbilitySystemComponent>(SigilCharacter->GetAbilitySystemComponent());
 		}
 
-		if (APlayerController* PC = Cast<APlayerController>(Owner->GetInstigatorController()))
-		{
-			if (ULocalPlayer* LP = PC->GetLocalPlayer())
-			{
-				InputSubsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-			}
-		}
 	}
 }
 
@@ -58,36 +51,7 @@ void UItemAbilityManagerComp::CreateItemInstance(USigilItemSpecBase* InItemSpec)
 	CurrentItemMap.Add(InItemSpec->Tag, Instance);
 }
 
-void UItemAbilityManagerComp::EquipItem(const FGameplayTag InItemTag)
-{
-	if (IsValid(CurrentActiveItem))
-		UnEquipItem();
 
-	USigilSpawnedItemInstance* ItemToEquip = Cast<USigilSpawnedItemInstance>(CurrentItemMap.Find(InItemTag)->Get());
-	ItemToEquip->SpawnedItemActor->AttachToComponent(OwnerSkeletalMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		ItemToEquip->SpawnedItemSpec->ActiveSocket);
-	CurrentActiveItem = ItemToEquip;
-	CurrentActiveItem->GrantEquipAbility();
-	SigilAbilitySystemComponent->AddLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
-	InputSubsystem->AddMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext, 1);
-	SigilCharacter->SetLinkedLayerCombat();
-	CurrentItemTag = InItemTag;	
-}
-
-void UItemAbilityManagerComp::UnEquipItem()
-{
-	if (!IsValid(CurrentActiveItem))
-		return;
-
-	CurrentActiveItem->SpawnedItemActor->AttachToComponent(OwnerSkeletalMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		CurrentActiveItem->SpawnedItemSpec->PassiveSocket);
-	CurrentActiveItem->RemoveEquipAbility();
-	SigilAbilitySystemComponent->RemoveLooseGameplayTag(CurrentActiveItem->SpawnedItemSpec->Tag);
-	InputSubsystem->RemoveMappingContext(CurrentActiveItem->SpawnedItemSpec->InputMappingContext);
-	SigilCharacter->SetLinkedLayerDefault();
-	CurrentActiveItem = nullptr;
-	CurrentItemTag = FGameplayTag();;
-}
 
 USigilItemInstanceBase* UItemAbilityManagerComp::GetItemInstance(const FGameplayTag InItemTag) const
 {

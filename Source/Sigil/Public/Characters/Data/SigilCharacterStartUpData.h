@@ -31,5 +31,6 @@ public:
 	void GiveAbilities(TArray<TSubclassOf<USigilGameplayAbility>>& AbilitiesToGive,
 		USigilAbilitySystemComponent* InAbilitySystemComponent, int32 ApplyLevel=1);
 
-	void CreateItemInstances(TArray<TObjectPtr<USigilItemSpecBase>>& InStartingItems, UItemAbilityManagerComp* InSigilAbilityManagerComponent);
+	virtual void CreateItemInstances(TArray<TObjectPtr<USigilItemSpecBase>>& InStartingItems, UItemAbilityManagerComp* InSigilAbilityManagerComponent);
 };
+

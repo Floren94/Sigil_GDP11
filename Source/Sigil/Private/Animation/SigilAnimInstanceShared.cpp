@@ -30,7 +30,7 @@ void USigilAnimInstanceShared::NativeThreadSafeUpdateAnimation(float DeltaSecond
 		
 		WorldRotation = OwningPlayer->GetActorRotation();
 
-		MovementState = OwningPlayer->GetMovementState();
+		//MovementState = OwningPlayer->GetMovementState();
 		bIsFalling = MovementComponent->IsFalling();
 
 		VelocityDirectionAngle = USigilAnimUtils::CalculateDirection(WorldVelocity2D, WorldRotation);

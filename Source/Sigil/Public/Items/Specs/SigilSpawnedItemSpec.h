@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SigilItemSpecBase.h"
+#include "Items/InstanceObjects/SigilSpawnedItemInstance.h"
 #include "SigilSpawnedItemSpec.generated.h"
 
 class ASigilItemBase;
@@ -28,5 +29,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equip")
 	FName ActiveSocket;
 
-	virtual USigilItemInstanceBase* CreateItemInstance(UObject* Outer) const;
+	IMPLEMENT_ITEM_FACTORY(USigilSpawnedItemInstance)
 };

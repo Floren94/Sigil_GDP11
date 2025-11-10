@@ -5,7 +5,3 @@
 
 #include "Items/InstanceObjects/SigilSpawnedItemInstance.h"
 
-USigilItemInstanceBase* USigilSpawnedItemSpec::CreateItemInstance(UObject* Outer) const
-{
-	return NewObject<USigilSpawnedItemInstance>(Outer);
-}

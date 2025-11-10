@@ -30,44 +30,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|AbilitySystem")
 	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|Items")
-	TObjectPtr<UItemAbilityManagerComp> ItemAbilityManagerComp;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sigil|Animation", meta=(AllowPrivateAccess=true))
-	EMovementState MovementState;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|StartUpData")
 	TSoftObjectPtr<USigilCharacterStartUpData> StartUpData;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Animation", meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAnimInstance> AnimLayerClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|Animation", meta=(AllowPrivateAccess=true))
-	TSubclassOf<UAnimInstance> AnimCombatLayerClass;
 	
-	void GiveStartingAbilities() const;
+	void GiveStartingAbilities();
+	virtual void HandlePostStartUpDataLoaded(USigilCharacterStartUpData* LoadedStartUpData) {};
 	
-	public:	
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Sigil|Item|Abilities")
-	UItemAbilityManagerComp* GetItemAbilityComponent() {return ItemAbilityManagerComp;}
-	
-	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
-	void SetMovementState(const EMovementState InMovementState);
-	
-	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
-	EMovementState GetMovementState() const {return MovementState;}
-
+public:	
 	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
 	void AddGameplayTag(const FGameplayTag InTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Abilities|Tags")
 	void RemoveGameplayTag(const FGameplayTag InTag);
-
-	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Animation")
-	void SetLinkedLayerDefault();
-
-	UFUNCTION(BlueprintCallable, Category = "Sigil|Character|Animation")
-	void SetLinkedLayerCombat();
-
-	void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+	
 };

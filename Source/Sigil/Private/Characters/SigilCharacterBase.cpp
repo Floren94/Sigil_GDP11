@@ -2,12 +2,9 @@
 
 
 #include "Sigil/Public/Characters/SigilCharacterBase.h"
-
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "Characters/Data/SigilCharacterStartUpData.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameplayTags/SigilGameplayTagsAbilities.h"
-
+#include "Engine/AssetManager.h"
 
 // Sets default values
 ASigilCharacterBase::ASigilCharacterBase()
@@ -18,7 +15,6 @@ ASigilCharacterBase::ASigilCharacterBase()
 	GetMesh()->bReceivesDecals = false;
 
 	SigilAbilitySystemComponent = CreateDefaultSubobject<USigilAbilitySystemComponent>("SigilAbilitySystemComponent");
-	ItemAbilityManagerComp = CreateDefaultSubobject<UItemAbilityManagerComp>("ItemAbilityManagerComponent");
 }
 
 UAbilitySystemComponent* ASigilCharacterBase::GetAbilitySystemComponent() const
@@ -33,23 +29,21 @@ void ASigilCharacterBase::BeginPlay()
 	GiveStartingAbilities();
 }
 
-void ASigilCharacterBase::GiveStartingAbilities() const
+void ASigilCharacterBase::GiveStartingAbilities() 
 {
 	if (StartUpData.IsNull())
 		return;
 
-	if (USigilCharacterStartUpData* LoadedStartUpData  = StartUpData.LoadSynchronous())
-	{
-		LoadedStartUpData->GiveAbilityToComponent(SigilAbilitySystemComponent);
-		LoadedStartUpData->GiveStartingItems(ItemAbilityManagerComp);
-	}
+	UAssetManager::GetStreamableManager().RequestAsyncLoad(StartUpData.ToSoftObjectPath(),
+		FStreamableDelegate::CreateLambda([this]
+		{
+			if (USigilCharacterStartUpData* LoadedStartUpData = StartUpData.Get())
+			{
+				LoadedStartUpData->GiveAbilityToComponent(SigilAbilitySystemComponent);
+				HandlePostStartUpDataLoaded(LoadedStartUpData);
+			}
+		}));
 }
-
-void ASigilCharacterBase::SetMovementState(const EMovementState InMovementState)
-{
-	MovementState = InMovementState;
-}
-
 
 void ASigilCharacterBase::AddGameplayTag(const FGameplayTag InTag)
 {
@@ -61,31 +55,3 @@ void ASigilCharacterBase::RemoveGameplayTag(const FGameplayTag InTag)
 	SigilAbilitySystemComponent->RemoveLooseGameplayTag(InTag);
 }
 
-void ASigilCharacterBase::SetLinkedLayerDefault()
-{
-	GetMesh()->LinkAnimClassLayers(AnimLayerClass);
-}
-
-void ASigilCharacterBase::SetLinkedLayerCombat()
-{
-	GetMesh()->LinkAnimClassLayers(AnimCombatLayerClass);
-}
-
-void ASigilCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
-{
-	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
-
-	if (!IsValid(SigilAbilitySystemComponent)) return;
-
-	if (GetCharacterMovement()->IsFalling())
-	{
-		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
-		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
-	}
-	else if (GetCharacterMovement()->IsMovingOnGround())
-	{
-		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
-		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
-		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
-	}
-}

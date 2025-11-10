@@ -16,6 +16,12 @@ class SIGIL_API USigilItemSpecBase : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	#define IMPLEMENT_ITEM_FACTORY(InstanceClass) \
+	virtual USigilItemInstanceBase* CreateItemInstance(UObject* Outer) const override \
+	{ \
+		return NewObject<InstanceClass>(Outer);\
+	}
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
 	TArray<FInputAbilitySet> Abilities;
 

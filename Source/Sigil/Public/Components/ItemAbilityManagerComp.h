@@ -25,12 +25,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CreateItemInstance(USigilItemSpecBase* InItemSpec);
-	
-	UFUNCTION(BlueprintCallable)
-	void EquipItem(const FGameplayTag InItemTag);
-	
-	UFUNCTION(BlueprintCallable)
-	void UnEquipItem();
 
 	UFUNCTION(BlueprintCallable)
 	USigilItemInstanceBase* GetItemInstance(const FGameplayTag InItemTag) const;
@@ -63,9 +57,6 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<USkeletalMeshComponent> OwnerSkeletalMesh;
-
-	UPROPERTY()
-	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> InputSubsystem;
 
 	UPROPERTY()
 	TObjectPtr<USigilSpawnedItemInstance> CurrentActiveItem;

@@ -6,12 +6,14 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Chaos/PBDSuspensionConstraintData.h"
+#include "Characters/Data/SigilCharacterStartUpData.h"
+#include "Components/PlayerItemAbiltyManager.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayTags/SigilGameplayTagsAbilities.h"
 #include "GameplayTags/SigilGameplayTagsInput.h"
 #include "Input/SigilInputComponent.h"
 #include "Input/SigilInputConfig.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 
@@ -20,6 +22,8 @@ ASigilPlayerCharacter::ASigilPlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	ItemAbilityManagerComp = CreateDefaultSubobject<UPlayerItemAbiltyManager>("ItemAbilityManager");
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -34,11 +38,10 @@ void ASigilPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	MovementState = EMovementState::Walking;
-	//AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
 
 	if (IsValid(AnimLayerClass))
 	{
-		GetMesh()->LinkAnimClassLayers(AnimLayerClass);
+		SetLinkedLayerDefault();
 	}
 }
 
@@ -63,14 +66,6 @@ void ASigilPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		SigilInputComponent->BindNativeAction(InputConfig, SigilGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ASigilPlayerCharacter::Look);
 		SigilInputComponent->BindAbilityAction(InputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased);
 	}
-}
-
-void ASigilPlayerCharacter::Landed(const FHitResult& Hit)
-{
-	Super::Landed(Hit);
-
-	//AddGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
-	//RemoveGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
 }
 
 void ASigilPlayerCharacter::Move(const FInputActionValue& Value)
@@ -102,4 +97,44 @@ void ASigilPlayerCharacter::AbilityInputPressed(FGameplayTag InputTag)
 void ASigilPlayerCharacter::AbilityInputReleased(FGameplayTag InputTag)
 {
 	SigilAbilitySystemComponent->AbilityTagReleased(InputTag);
+}
+
+void ASigilPlayerCharacter::HandlePostStartUpDataLoaded(USigilCharacterStartUpData* LoadedStartUpData)
+{
+	if (!IsValid(LoadedStartUpData)) return;
+	LoadedStartUpData->GiveStartingItems(ItemAbilityManagerComp);
+}
+
+void ASigilPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+
+	if (!IsValid(SigilAbilitySystemComponent)) return;
+
+	if (GetCharacterMovement()->IsFalling())
+	{
+		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+	}
+	else if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		SigilAbilitySystemComponent->AddLooseGameplayTag(SigilGameplayTags::Ability_Movement_Grounded);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_Airborne);
+		SigilAbilitySystemComponent->RemoveLooseGameplayTag(SigilGameplayTags::Ability_Movement_DoubleJump);
+	}
+}
+
+void ASigilPlayerCharacter::SetMovementState(const EMovementState InMovementState)
+{
+	MovementState = InMovementState;
+}
+
+void ASigilPlayerCharacter::SetLinkedLayerDefault()
+{
+	GetMesh()->LinkAnimClassLayers(AnimLayerClass);
+}
+
+void ASigilPlayerCharacter::SetLinkedLayerCombat()
+{
+	GetMesh()->LinkAnimClassLayers(AnimCombatLayerClass);
 }
