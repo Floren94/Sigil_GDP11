@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "AbilitySystem/SigilGameplayAbility.h"
-#include "Components/ItemAbilityManagerComp.h"
 #include "Engine/DataAsset.h"
-#include "Items/Specs/SigilItemSpecBase.h"
 #include "SigilCharacterStartUpData.generated.h"
 
-/**
- * 
- */
+
+class USigilItemSpecBase;
+class UItemAbilityManagerComp;
+
 UCLASS()
 class SIGIL_API USigilCharacterStartUpData : public UDataAsset
 {

@@ -3,7 +3,6 @@
 
 #include "Characters/Data/SigilPlayerStartUpData.h"
 
-#include "AbilitySystem/SigilAbilitySystemComponent.h"
 
 void USigilPlayerStartUpData::GiveAbilityToComponent(USigilAbilitySystemComponent* InSigilAbilityComponent, int32 InAbilityLevel)
 {

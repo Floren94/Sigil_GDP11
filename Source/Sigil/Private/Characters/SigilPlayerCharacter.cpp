@@ -1,19 +1,18 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Sigil/Public/Characters/SigilPlayerCharacter.h"
+#include "Characters/SigilPlayerCharacter.h"
+
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Characters/Data/SigilCharacterStartUpData.h"
 #include "Components/PlayerItemAbiltyManager.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameplayTags/SigilGameplayTagsAbilities.h"
 #include "GameplayTags/SigilGameplayTagsInput.h"
 #include "Input/SigilInputComponent.h"
 #include "Input/SigilInputConfig.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 
 
@@ -23,7 +22,7 @@ ASigilPlayerCharacter::ASigilPlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ItemAbilityManagerComp = CreateDefaultSubobject<UPlayerItemAbiltyManager>("ItemAbilityManager");
+	ItemAbilityManagerComponent = CreateDefaultSubobject<UPlayerItemAbiltyManager>("ItemAbilityManager");
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -34,9 +33,9 @@ ASigilPlayerCharacter::ASigilPlayerCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
-void ASigilPlayerCharacter::BeginPlay()
+void ASigilPlayerCharacter::PossessedBy(AController* NewController)
 {
-	Super::BeginPlay();
+	Super::PossessedBy(NewController);
 	MovementState = EMovementState::Walking;
 
 	if (IsValid(AnimLayerClass))
@@ -102,7 +101,7 @@ void ASigilPlayerCharacter::AbilityInputReleased(FGameplayTag InputTag)
 void ASigilPlayerCharacter::HandlePostStartUpDataLoaded(USigilCharacterStartUpData* LoadedStartUpData)
 {
 	if (!IsValid(LoadedStartUpData)) return;
-	LoadedStartUpData->GiveStartingItems(ItemAbilityManagerComp);
+	LoadedStartUpData->GiveStartingItems(ItemAbilityManagerComponent);
 }
 
 void ASigilPlayerCharacter::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)

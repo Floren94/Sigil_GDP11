@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "SigilCharacterBase.h"
+#include "AbilitySystem/SigilAbilitySystemComponent.h"
+#include "Data/SigilCharacterStartupData.h"
+#include "Data/SigilPlayerStartupData.h"
+#include "GameplayTags/SigilGameplayTagsAbilities.h"
 #include "SigilPlayerCharacter.generated.h"
 
-class UPlayerItemAbiltyManager;
 class USigilInputConfig;
 struct FInputActionValue;
 class UInputAction;
@@ -23,7 +26,7 @@ public:
 	// Sets default values for this character's properties
 	ASigilPlayerCharacter();
 
-	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sigil|Character", meta = (AllowPrivateAccess = "true"))
@@ -36,7 +39,7 @@ protected:
 	TObjectPtr<USigilInputConfig> InputConfig;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sigil|Character|Item|Abilities")
-	TObjectPtr<UPlayerItemAbiltyManager> ItemAbilityManagerComp;
+	TObjectPtr<UPlayerItemAbiltyManager> ItemAbilityManagerComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Sigil|Animation", meta=(AllowPrivateAccess=true))
 	EMovementState MovementState;
@@ -57,7 +60,7 @@ protected:
 	
 public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Sigil|Item|Abilities")
-	UPlayerItemAbiltyManager* GetItemAbilityComponent() {return ItemAbilityManagerComp;}
+	UPlayerItemAbiltyManager* GetItemAbilityComponent() {return ItemAbilityManagerComponent;}
 	
 	UFUNCTION(BlueprintCallable, Category="Sigil|Animation")
 	void SetMovementState(const EMovementState InMovementState);

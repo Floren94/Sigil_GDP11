@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemAbilityManagerComp.h"
 #include "Components/ItemAbilityManagerComp.h"
+#include "GameplayTagContainer.h"
 #include "PlayerItemAbiltyManager.generated.h"
 
-
+class USigilItemSpecBase;
 class ASigilPlayerCharacter;
+class USigilSpawnedItemInstance;
+class UEnhancedInputLocalPlayerSubsystem;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SIGIL_API UPlayerItemAbiltyManager : public UItemAbilityManagerComp
@@ -21,6 +23,19 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void UnEquipItem();
+	
+	virtual AActor* GetSpawnedItem() const override;
+	
+	UFUNCTION(BlueprintCallable)
+	USigilSpawnedItemInstance* GetPlayerWeaponInstance() const {return CurrentActiveItem;}
+
+	template<typename T>
+	T* GetEquippedItemInstance() const
+	{
+		return Cast<T>(CurrentActiveItem);
+	}
+
+	virtual void CreateItemInstance(USigilItemSpecBase* InItemSpec) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -28,6 +43,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UEnhancedInputLocalPlayerSubsystem> InputSubsystem;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<USigilSpawnedItemInstance> CurrentActiveItem;
+	
 	UPROPERTY()
 	TObjectPtr<ASigilPlayerCharacter> PlayerCharacter;
 };

@@ -8,11 +8,7 @@
 #include "ItemAbilityManagerComp.generated.h"
 
 
-class ASigilCharacterBase;
 class USigilItemInstanceBase;
-class USigilItemSpecBase;
-class USigilSpawnedItemInstance;
-class UEnhancedInputLocalPlayerSubsystem;
 class USigilAbilitySystemComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,18 +20,18 @@ public:
 	UItemAbilityManagerComp();
 
 	UFUNCTION(BlueprintCallable)
-	void CreateItemInstance(USigilItemSpecBase* InItemSpec);
+	virtual void CreateItemInstance(USigilItemSpecBase* InItemSpec) {};
 
+	UFUNCTION(BlueprintCallable)
+	virtual AActor* GetSpawnedItem() const {return nullptr;}
+	
 	UFUNCTION(BlueprintCallable)
 	USigilItemInstanceBase* GetItemInstance(const FGameplayTag InItemTag) const;
-
-	UFUNCTION(BlueprintCallable)
-	USigilSpawnedItemInstance* GetActiveItem() {return CurrentActiveItem;}
-
+	
 	template<typename T>
-	T* GetEquippedItemInstance() const
+	T* GetSpawnedItemAs() const
 	{
-		return Cast<T>(CurrentActiveItem);
+		return Cast<T>(GetSpawnedItem());
 	}
 
 	template<typename T>
@@ -53,18 +49,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY()
+	TObjectPtr<class ASigilCharacterBase> SigilCharacter;
+	
+	UPROPERTY()
 	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
 	
 	UPROPERTY()
 	TObjectPtr<USkeletalMeshComponent> OwnerSkeletalMesh;
-
-	UPROPERTY()
-	TObjectPtr<USigilSpawnedItemInstance> CurrentActiveItem;
-
-	UPROPERTY()
-	TObjectPtr<ASigilCharacterBase> SigilCharacter;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FGameplayTag CurrentItemTag;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

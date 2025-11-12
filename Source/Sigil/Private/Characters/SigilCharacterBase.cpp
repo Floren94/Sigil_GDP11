@@ -22,9 +22,9 @@ UAbilitySystemComponent* ASigilCharacterBase::GetAbilitySystemComponent() const
 	return SigilAbilitySystemComponent.Get();
 }
 
-void ASigilCharacterBase::BeginPlay()
+void ASigilCharacterBase::PossessedBy(AController* NewController) 
 {
-	Super::BeginPlay();
+	Super::PossessedBy(NewController);
 	SigilAbilitySystemComponent->InitAbilityActorInfo(this, this);
 	GiveStartingAbilities();
 }
@@ -37,10 +37,10 @@ void ASigilCharacterBase::GiveStartingAbilities()
 	UAssetManager::GetStreamableManager().RequestAsyncLoad(StartUpData.ToSoftObjectPath(),
 		FStreamableDelegate::CreateLambda([this]
 		{
-			if (USigilCharacterStartUpData* LoadedStartUpData = StartUpData.Get())
+			if (USigilCharacterStartUpData* LoadedData = StartUpData.Get())
 			{
-				LoadedStartUpData->GiveAbilityToComponent(SigilAbilitySystemComponent);
-				HandlePostStartUpDataLoaded(LoadedStartUpData);
+				LoadedData->GiveAbilityToComponent(SigilAbilitySystemComponent);
+				HandlePostStartUpDataLoaded(LoadedData);
 			}
 		}));
 }

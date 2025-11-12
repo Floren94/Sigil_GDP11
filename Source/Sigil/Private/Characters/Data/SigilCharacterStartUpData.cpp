@@ -2,8 +2,8 @@
 
 
 #include "Characters/Data/SigilCharacterStartUpData.h"
-
-#include "AbilitySystem/SigilAbilitySystemComponent.h"
+#include "Items/Specs/SigilItemSpecBase.h"
+#include "Components/ItemAbilityManagerComp.h"
 
 
 void USigilCharacterStartUpData::GiveAbilityToComponent(USigilAbilitySystemComponent* InSigilAbilityComponent,
