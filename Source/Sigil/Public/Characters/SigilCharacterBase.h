@@ -9,6 +9,7 @@
 #include "Utilities/SigilAnimUtils.h"
 #include "SigilCharacterBase.generated.h"
 
+class USigilHealthAttributeSet;
 class UItemAbilityManagerComp;
 class USigilCharacterStartUpData;
 class USigilAbilitySystemComponent;
@@ -30,6 +31,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Sigil|Character|AbilitySystem")
 	TObjectPtr<USigilAbilitySystemComponent> SigilAbilitySystemComponent;
 
+	UPROPERTY()
+	TObjectPtr<USigilHealthAttributeSet> HealthAttributeSet;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sigil|StartUpData")
 	TSoftObjectPtr<USigilCharacterStartUpData> StartUpData;
 	

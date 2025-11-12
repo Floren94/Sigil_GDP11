@@ -3,6 +3,7 @@
 
 #include "Sigil/Public/Characters/SigilCharacterBase.h"
 #include "AbilitySystem/SigilAbilitySystemComponent.h"
+#include "AbilitySystem/Attributes/SigilHealthAttributeSet.h"
 #include "Characters/Data/SigilCharacterStartUpData.h"
 #include "Engine/AssetManager.h"
 
@@ -15,6 +16,7 @@ ASigilCharacterBase::ASigilCharacterBase()
 	GetMesh()->bReceivesDecals = false;
 
 	SigilAbilitySystemComponent = CreateDefaultSubobject<USigilAbilitySystemComponent>("SigilAbilitySystemComponent");
+	HealthAttributeSet = CreateDefaultSubobject<USigilHealthAttributeSet>("HealthAttributeSet");
 }
 
 UAbilitySystemComponent* ASigilCharacterBase::GetAbilitySystemComponent() const
