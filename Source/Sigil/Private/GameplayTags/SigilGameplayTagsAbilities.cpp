@@ -17,6 +17,7 @@ UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::Ability_Movement_Airborne,   "Ability.
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::Ability_Effect_Cooldown_Attack_Light_Staff, "Ability.Effect.Cooldown.Attack.Light.Staff")
 
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::Ability_BlockMontage, "Ability.BlockMontage")
+UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::Ability_HitReact, "Ability.HitReact")
 
 //Weapons
 UE_DEFINE_GAMEPLAY_TAG(SigilGameplayTags::Ability_Player_Weapon_Staff, "Ability.Player.Weapon.Staff")

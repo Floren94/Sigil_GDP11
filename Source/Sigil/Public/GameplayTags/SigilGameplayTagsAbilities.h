@@ -21,6 +21,7 @@ namespace SigilGameplayTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Effect_Cooldown_Attack_Light_Staff)
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_BlockMontage)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_HitReact)
 	
 	//Weapons
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Player_Weapon_Staff)

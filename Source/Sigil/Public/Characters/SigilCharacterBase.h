@@ -25,6 +25,9 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Sigil|Item|Abilities")
+	USigilAbilitySystemComponent* GetSigilAbilityComponent() {return SigilAbilitySystemComponent;}
+	
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
