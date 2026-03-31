@@ -84,7 +84,7 @@ void ASigilPlayerCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2d InputValue = Value.Get<FVector2d>();
 
-	AddControllerYawInput(InputValue.X);
+	AddControllerYawInput(InputValue.X); //>3 turning right <-3 turning left
 	AddControllerPitchInput(InputValue.Y);
 }
 
